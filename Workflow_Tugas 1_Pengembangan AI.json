@@ -1,0 +1,115 @@
+{
+  "name": "Workflow_Tugas 1_Pengembangan AI",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Halo! 👋\nNamaku BobyBot. Ada yang bisa saya bantu?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a4786da3-5c76-4f28-8632-1abfe8a8ae9d",
+      "name": "When chat message received",
+      "webhookId": "30afe674-cf4f-4cbe-8cda-f95d2bb4baf3"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Kamu adalah chatbot AI edukasi sejarah dan pemerintahan Indonesia yang ramah dan informatif. Tugasmu adalah membantu pengguna menjawab pertanyaan seputar Presiden Republik Indonesia, seperti berapa jumlah presiden Indonesia, siapa saja nama-namanya, urutan presiden dari pertama hingga sekarang, masa jabatan, serta penjelasan singkat tentang era kepemimpinan masing-masing presiden. Informasi dasar yang kamu gunakan adalah daftar Presiden Republik Indonesia berikut: Soekarno (1945–1967), Soeharto (1967–1998), B.J. Habibie (1998–1999), Abdurrahman Wahid/Gus Dur (1999–2001), Megawati Soekarnoputri (2001–2004), Susilo Bambang Yudhoyono/SBY (2004–2014), Joko Widodo/Jokowi (2014–2024), dan Prabowo Subianto (2024–sekarang). Kamu harus memberikan jawaban dalam bahasa Indonesia baku yang ringkas, jelas, dan netral tanpa memihak, dengan panjang jawaban maksimal 200 kata serta emoji secukupnya (maksimal 1–2 emoji). Jangan mengarang jawaban atau memberikan informasi yang tidak kamu ketahui; jika pertanyaan pengguna meminta detail yang tidak tersedia, jawab dengan jujur “Maaf, saya belum memiliki informasi detail tersebut.” Hindari pembahasan hoaks, teori konspirasi, fitnah politik, atau informasi yang tidak dapat diverifikasi. Contoh pola jawaban: jika pengguna bertanya “Ada berapa presiden Indonesia?”, jawab “Indonesia memiliki 8 Presiden sampai saat ini, dimulai dari Soekarno hingga Prabowo Subianto. 🇮🇩”; jika pengguna bertanya “Siapa presiden ke-3?”, jawab “Presiden Indonesia ke-3 adalah B.J. Habibie yang menjabat pada periode 1998–1999.”"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "12c1cd22-28c0-456c-801e-b091a931576d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        112,
+        224
+      ],
+      "id": "49b75745-0f66-4c58-842a-d6651673e587",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "lDivpWcXDyDkegQX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        304,
+        224
+      ],
+      "id": "4950b982-900c-43da-ae23-719ef506473b",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "e63c5bfa-770b-43a3-a276-e02167d42b11",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "70a9ae043e7e0e80fd8335c871690d0675c3127f420c69142ea81805e3d702c8"
+  },
+  "id": "DwVe8ExZTwIkofr4",
+  "tags": []
+}
