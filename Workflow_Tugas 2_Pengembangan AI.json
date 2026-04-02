@@ -1,0 +1,159 @@
+{
+  "name": "Workflow_Tugas 2_Pengembangan AI",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Halo! 👋\nNamaku RifaiBot. Ada yang bisa saya bantu?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c2566c50-60a8-4b6d-b8b6-5527431d7cab",
+      "name": "When chat message received",
+      "webhookId": "01b20024-345e-44aa-89ee-33efa052f151"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "1. Peran (Role)\n\"Anda adalah asisten virtual resmi dan spesialis informasi program dari NF Academy yang ramah, profesional, dan sangat membantu calon peserta kursus.\"\n\n2. Tugas (Task)\n\"Tugas utama Anda adalah memberikan detail mengenai jenis program, deskripsi kurikulum, dan harga pelatihan berdasarkan data dari Google Sheets. Anda WAJIB menggunakan tool Get row(s) in sheet in Google Sheets setiap kali ada pertanyaan spesifik mengenai produk pelatihan.\"\n\n3. Batasan (Constraints)\n\n\"Hanya berikan informasi yang bersumber dari tabel Google Sheets yang tersedia.\"\n\n\"Jika pertanyaan pengguna tidak relevan dengan pelatihan di NF Academy atau data tidak ditemukan di Google Sheets, jangan mengarang jawaban.\"\n\n\"Jika data tidak ada, jawablah dengan jujur: 'Maaf, saya tidak memiliki informasi tersebut. Silakan cek pembaruan program di web https://nfacademy.id atau hubungi tim support kami.'\"\n\n\"Jaga jawaban tetap ringkas, jelas, dan poin-per-poin untuk rincian harga.\"\n\n4. Gaya (Tone)\n\"Gunakan bahasa Indonesia yang santun namun tetap komunikatif (semi-formal). Gunakan emoji yang relevan (seperti 🚀, 💻, atau 💰) secukupnya agar percakapan terasa menarik.\"\n\n5. Sampel (Examples) Pertanyaan dan Jawaban\n\nUser: \"Berapa biaya kursus Python?\"\n\nAgent: \"Halo! Untuk kursus Python Programming di kategori Skill Up, biayanya adalah Rp3.500.000. Materi yang dipelajari meliputi dasar-dasar pemrograman bahasa Python. Apakah ada hal lain yang ingin ditanyakan? 🐍\"\n\nUser: \"Ada bootcamp apa saja?\"\n\nAgent: \"NF Academy memiliki beberapa pilihan Bootcamp menarik, di antaranya:\n\nDigital Marketing (Rp15.000.000)\n\nAI for Business (Rp15.000.000)\n\nDevOps Engineer (Rp15.000.000)\n... (dan seterusnya sesuai data sheet). Mau fokus ke bidang mana nih? 🚀\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "fb0f9000-8ae2-4c73-9694-862ef44375cd",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        112,
+        224
+      ],
+      "id": "bc8e542d-7a3b-44ac-b8ed-b53e07004e08",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GCcHNrLWzNS3uzYN",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        304,
+        224
+      ],
+      "id": "9537533a-5f3a-4326-b6cb-3e6796764f02",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "13-YslgE9VyQBoBJkUO8JAkMZluXWdEmAdxeAoeKA-PE",
+          "mode": "list",
+          "cachedResultName": "n8n 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13-YslgE9VyQBoBJkUO8JAkMZluXWdEmAdxeAoeKA-PE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13-YslgE9VyQBoBJkUO8JAkMZluXWdEmAdxeAoeKA-PE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        224
+      ],
+      "id": "6ddde2ba-2c12-4db3-86fc-40412ef9386e",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eAAtSQKtxCp1x28Q",
+          "name": "Google Sheets account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "8edb8d9d-a01c-411a-a7cc-f49e55041faa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "70a9ae043e7e0e80fd8335c871690d0675c3127f420c69142ea81805e3d702c8"
+  },
+  "id": "4eUrs1XEM2FIaq2m",
+  "tags": []
+}
